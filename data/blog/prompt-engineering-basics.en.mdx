@@ -1,0 +1,17 @@
+---
+title: 'Prompt Engineering Playbook for Reliable Agents'
+date: '2025-01-18'
+tags:
+  - prompt-engineering
+summary: 'Practical patterns to keep large language models predictable in production.'
+language: en
+translationKey: prompt-engineering-basics
+authors:
+  - default
+---
+
+Prompt engineering has matured from clever tricks into an engineering discipline with shared vocabularies and measurable quality gates. Modern teams start by mapping every task to an explicit contract: required inputs, desired outputs, failure modes, and evaluation metrics. Writing this contract first prevents prompt drift and keeps downstream consumers—from APIs to analytics pipelines—aligned on what “good” looks like.
+
+Once the contract is in place, small modular prompts beat monolithic megastrings. Break the workflow into stages—planning, retrieval, reasoning, response—and capture state between each stage so you can debug like a traditional system. Tool calling, function schemas, and structured outputs are worth the upfront effort because they make regressions obvious and unlock automated testing.
+
+Finally, treat continuous improvement as part of operations. Capture user feedback, auto-label troublesome conversations, and replay them in shadow environments whenever you ship a model or prompt update. Coupled with guardrail policies and lightweight fallbacks, these loops create agents that are both more capable and more trustworthy with every iteration.

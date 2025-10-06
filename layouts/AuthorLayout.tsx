@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import type { Authors } from 'contentlayer/generated'
 import SocialIcon from '@/components/social-icons'
 import Image from '@/components/Image'
+import Logo from '@/data/logo.svg'
 
 interface Props {
   children: ReactNode
@@ -10,6 +11,7 @@ interface Props {
 
 export default function AuthorLayout({ children, content }: Props) {
   const { name, avatar, occupation, company, email, twitter, bluesky, linkedin, github } = content
+  const isLogoAvatar = typeof avatar === 'string' && avatar.endsWith('/logo.svg')
 
   return (
     <>
@@ -21,15 +23,20 @@ export default function AuthorLayout({ children, content }: Props) {
         </div>
         <div className="items-start space-y-2 xl:grid xl:grid-cols-3 xl:gap-x-8 xl:space-y-0">
           <div className="flex flex-col items-center space-x-2 pt-8">
-            {avatar && (
-              <Image
-                src={avatar}
-                alt="avatar"
-                width={192}
-                height={192}
-                className="h-48 w-48 rounded-full"
-              />
-            )}
+            {avatar &&
+              (isLogoAvatar ? (
+                <div className="flex h-48 w-48 items-center justify-center rounded-full border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+                  <Logo className="h-32 w-auto" />
+                </div>
+              ) : (
+                <Image
+                  src={avatar}
+                  alt="avatar"
+                  width={192}
+                  height={192}
+                  className="h-48 w-48 rounded-full"
+                />
+              ))}
             <h3 className="pt-4 pb-2 text-2xl leading-8 font-bold tracking-tight">{name}</h3>
             <div className="text-gray-500 dark:text-gray-400">{occupation}</div>
             <div className="text-gray-500 dark:text-gray-400">{company}</div>

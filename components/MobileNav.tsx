@@ -5,10 +5,13 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 import { Fragment, useState, useEffect, useRef } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
+import { languageOptions, useLanguage } from './LanguageProvider'
+import type { LanguageCode } from '@/lib/language'
 
 const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
   const navRef = useRef(null)
+  const { language, setLanguage } = useLanguage()
 
   const onToggleNav = () => {
     setNavShow((status) => {
@@ -72,14 +75,25 @@ const MobileNav = () => {
                 ref={navRef}
                 className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-12 text-left"
               >
+                <select
+                  value={language}
+                  onChange={(event) => setLanguage(event.target.value as LanguageCode)}
+                  className="focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-400 mb-6 h-10 w-48 rounded-md border border-gray-300 bg-white px-2 text-base font-medium text-gray-900 shadow-sm focus:ring-2 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                >
+                  {Object.entries(languageOptions).map(([code, label]) => (
+                    <option key={code} value={code}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
                 {headerNavLinks.map((link) => (
                   <Link
-                    key={link.title}
+                    key={link.href}
                     href={link.href}
                     className="hover:text-primary-500 dark:hover:text-primary-400 mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 dark:text-gray-100"
                     onClick={onToggleNav}
                   >
-                    {link.title}
+                    {link.titles[language]}
                   </Link>
                 ))}
               </nav>

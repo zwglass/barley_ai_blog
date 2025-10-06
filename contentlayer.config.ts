@@ -25,6 +25,7 @@ import rehypePresetMinify from 'rehype-preset-minify'
 import siteMetadata from './data/siteMetadata'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import prettier from 'prettier'
+import { DEFAULT_LANGUAGE } from './lib/language'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
@@ -46,11 +47,14 @@ const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
   slug: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
+    resolve: (doc) => doc.translationKey || doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
   },
   path: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath,
+    resolve: (doc) => {
+      const base = doc.translationKey || doc._raw.flattenedPath.replace(/^.+?(\/)/, '')
+      return `blog/${base}`
+    },
   },
   filePath: {
     type: 'string',
@@ -65,7 +69,11 @@ const computedFields: ComputedFields = {
 async function createTagCount(allBlogs) {
   const tagCount: Record<string, number> = {}
   allBlogs.forEach((file) => {
-    if (file.tags && (!isProduction || file.draft !== true)) {
+    if (
+      file.tags &&
+      (!isProduction || file.draft !== true) &&
+      (file.language === DEFAULT_LANGUAGE || !file.language)
+    ) {
       file.tags.forEach((tag) => {
         const formattedTag = slug(tag)
         if (formattedTag in tagCount) {
@@ -85,9 +93,12 @@ function createSearchIndex(allBlogs) {
     siteMetadata?.search?.provider === 'kbar' &&
     siteMetadata.search.kbarConfig.searchDocumentsPath
   ) {
+    const defaultLanguageBlogs = sortPosts(
+      allBlogs.filter((blog) => blog.language === DEFAULT_LANGUAGE || !blog.language)
+    )
     writeFileSync(
       `public/${path.basename(siteMetadata.search.kbarConfig.searchDocumentsPath)}`,
-      JSON.stringify(allCoreContent(sortPosts(allBlogs)))
+      JSON.stringify(allCoreContent(defaultLanguageBlogs))
     )
     console.log('Local search index generated...')
   }
@@ -109,6 +120,8 @@ export const Blog = defineDocumentType(() => ({
     layout: { type: 'string' },
     bibliography: { type: 'string' },
     canonicalUrl: { type: 'string' },
+    translationKey: { type: 'string', required: true },
+    language: { type: 'string', required: true },
   },
   computedFields: {
     ...computedFields,

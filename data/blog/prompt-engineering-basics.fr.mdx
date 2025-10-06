@@ -1,0 +1,17 @@
+---
+title: "Guide de prompt engineering pour des agents fiables"
+date: '2025-01-18'
+tags:
+  - prompt-engineering
+summary: "Des schémas concrets pour garder les modèles de langage grands stables en production."
+language: fr
+translationKey: prompt-engineering-basics
+authors:
+  - default
+---
+
+Le prompt engineering n'est plus un ensemble d'astuces improvisées : c'est devenu une discipline avec un vocabulaire commun et des seuils de qualité mesurables. Les équipes modernes commencent par établir un contrat clair pour chaque tâche : entrées nécessaires, sorties attendues, modes d'échec, métriques d'évaluation. Rédiger ce contrat en amont évite la dérive des prompts et aligne les consommateurs en aval – API comme pipelines analytiques – sur la définition même d'un bon résultat.
+
+Une fois le contrat posé, les prompts modulaires surpassent les longues chaînes monolithiques. Découpez le flux de travail en étapes – planification, recherche, raisonnement, réponse – et conservez l'état entre chaque étape afin de pouvoir déboguer comme sur un système classique. L'appel d'outils, les schémas de fonctions et les sorties structurées exigent un investissement initial, mais ils rendent les régressions évidentes et ouvrent la voie aux tests automatisés.
+
+Enfin, considérez l'amélioration continue comme une routine d'exploitation. Collectez les retours utilisateurs, étiquetez automatiquement les conversations problématiques et rejouez-les dans des environnements ombres à chaque mise à jour de modèle ou de prompt. Associées à des politiques de garde-fou et à des mécanismes de repli légers, ces boucles produisent des agents à la fois plus performants et plus dignes de confiance au fil des itérations.

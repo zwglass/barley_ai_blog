@@ -3,6 +3,7 @@ import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import { ReactNode } from 'react'
 import Header from './Header'
+import { LanguageProvider } from './LanguageProvider'
 
 interface Props {
   children: ReactNode
@@ -15,11 +16,13 @@ const inter = Inter({
 const LayoutWrapper = ({ children }: Props) => {
   return (
     <SectionContainer>
-      <div className={`${inter.className} flex h-screen flex-col justify-between font-sans`}>
-        <Header />
-        <main className="mb-auto">{children}</main>
-        <Footer />
-      </div>
+      <LanguageProvider>
+        <div className={`${inter.className} flex h-screen flex-col justify-between font-sans`}>
+          <Header />
+          <main className="mb-auto">{children}</main>
+          <Footer />
+        </div>
+      </LanguageProvider>
     </SectionContainer>
   )
 }
