@@ -10,9 +10,9 @@ authors:
   - default
 ---
 
-Rekonstruiere das klassische Minispiel Space Invaders mit Codex.
+Setze Codex ein, um das klassische Minispiel Space Invaders neu zu erstellen.
 
-### Installiere die Basis-Tools – Git, Python, VS Code – über die offiziellen Seiten unten
+### Installiere die Basis-Tools – Git, Python, Node.js, VS Code – über die offiziellen Seiten unten
 
 ```
 # Git-Webseite
@@ -21,8 +21,42 @@ https://git-scm.com/
 # Python-Webseite
 https://www.python.org/
 
+# Node.js-Webseite
+https://nodejs.org/
+
 # VS Code-Webseite
 https://code.visualstudio.com/
+```
+
+### Codex-CLI installieren
+
+```
+npm install -g @openai/codex
+```
+
+### Codex-Umgebungsvariablen konfigurieren (füge die Relay-Einstellungen hinzu, wenn du in China über einen Proxy arbeitest)
+
+```
+# Öffne ~/.codex/config.toml und füge die folgenden Zeilen am Anfang ein:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Codex-Terminal starten
+
+```
+export CRS_OAI_KEY={api_key}
+codex
 ```
 
 ### Klone das Space-Invaders-Spiel mit Git

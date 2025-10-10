@@ -114,9 +114,17 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     return notFound()
   }
   const authorList = post?.authors || ['default']
-  const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Authors)
+  const authorDetails = authorList.map((authorKey) => {
+    const candidates = allAuthors.filter(
+      (entry) => (entry.translationKey || entry.slug) === authorKey
+    )
+    const primary =
+      candidates.find((entry) => entry.language === activeLanguage) ??
+      candidates.find((entry) => entry.language === DEFAULT_LANGUAGE) ??
+      candidates[0] ??
+      allAuthors.find((entry) => entry.slug === authorKey) ??
+      allAuthors[0]
+    return coreContent(primary as Authors)
   })
   const translatedSummaries = buildTranslatedSummaries(sortPosts(allBlogs))
   const postIndex = translatedSummaries.findIndex((entry) => entry.translationKey === slug)

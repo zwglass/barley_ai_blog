@@ -12,7 +12,7 @@ authors:
 
 Codex로 고전 미니 게임 스페이스 인베이더를 다시 만들어 보세요.
 
-### 아래 공식 사이트에서 Git·Python·VS Code 기본 도구 설치하기
+### 아래 공식 사이트에서 Git·Python·Node.js·VS Code 기본 도구 설치하기
 
 ```
 # Git 공식 사이트
@@ -21,8 +21,42 @@ https://git-scm.com/
 # Python 공식 사이트
 https://www.python.org/
 
+# Node.js 공식 사이트
+https://nodejs.org/
+
 # VS Code 공식 사이트
 https://code.visualstudio.com/
+```
+
+### Codex CLI 설치하기
+
+```
+npm install -g @openai/codex
+```
+
+### Codex 환경 변수를 설정하기 (중국 내에서 릴레이(proxy)를 사용할 때 설정 추가)
+
+```
+# ~/.codex/config.toml 파일을 열고, 맨 위에 아래 내용을 추가하세요.
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{릴레이-도메인}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Codex 터미널 접속하기
+
+```
+export CRS_OAI_KEY={api_key}
+codex
 ```
 
 ### Git으로 스페이스 인베이더 게임 코드 가져오기

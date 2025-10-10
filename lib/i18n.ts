@@ -130,6 +130,14 @@ export const uiText: Record<string, Record<LanguageCode, string>> = {
     fr: 'Retour au blog',
     de: 'Zurück zum Blog',
   },
+  aboutTitle: {
+    zh: '关于我们',
+    en: 'About',
+    ja: '概要',
+    ko: '소개',
+    fr: 'À propos',
+    de: 'Über uns',
+  },
   pageCounter: {
     zh: '共',
     en: 'of',
