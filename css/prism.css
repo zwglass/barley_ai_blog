@@ -9,11 +9,19 @@
 
 /* Code title styles */
 .remark-code-title {
-  @apply rounded-xs bg-gray-700 px-5 py-3 font-mono text-sm font-bold text-gray-200 dark:bg-gray-800;
+  @apply rounded-xs bg-gray-200 px-5 py-3 font-mono text-sm font-bold text-gray-800 dark:bg-gray-800 dark:text-gray-200;
 }
 
 .remark-code-title + div > pre {
   @apply mt-0 rounded-t-none;
+}
+
+.prose pre {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.dark .prose pre {
+  @apply bg-gray-900 text-gray-100;
 }
 
 /* Code block styles */
@@ -34,7 +42,7 @@
 }
 
 .highlight-line {
-  @apply border-primary-500 -mx-4 border-l-4 bg-gray-700/50;
+  @apply border-primary-500 -mx-4 border-l-4 bg-gray-200 dark:bg-gray-700/50;
 }
 
 .line-number::before {
@@ -78,7 +86,7 @@
 .token.tag,
 .token.operator,
 .token.keyword {
-  color: rgb(127, 219, 202);
+  color: rgb(97, 177, 243);
 }
 
 .token.boolean {
@@ -125,7 +133,7 @@
 .token.regex,
 .token.important,
 .token.variable {
-  color: rgb(214, 222, 235);
+  color: rgb(96, 181, 255);
 }
 
 .token.important,

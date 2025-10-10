@@ -225,7 +225,7 @@ Edit the layout in `app` or content in `data`. With live reloading, the pages au
 
 `data/logo.svg` - replace with your own logo.
 
-`data/blog` - replace with your own blog posts.
+`data/blog` - replace with your own blog posts. Each post lives in a folder named after the `translationKey` (e.g. `data/blog/my-post/`), with one `.mdx` file per language inside (`en.mdx`, `zh.mdx`, etc.).
 
 `public/static` - store assets such as images and favicons.
 

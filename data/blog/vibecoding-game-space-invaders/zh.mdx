@@ -1,0 +1,62 @@
+---
+title: '氛围感编程-太空侵略者'
+date: '2025-10-10'
+tags:
+  - vibe-coding
+summary: '使用ai复刻经典小游戏,太空侵略者。'
+language: zh
+translationKey: vibecoding-game-space-invaders
+authors:
+  - default
+---
+
+使用 codex 复刻经典小游戏 - 太空侵略者。
+
+### 安装基础工具 git python vscode; 从下面的官网下载并安装
+
+```
+# git 官网
+https://git-scm.com/
+
+# python 官网
+https://www.python.org/
+
+# vscode 官网
+https://code.visualstudio.com/
+```
+
+### git拉取 太空侵略者 游戏代码
+
+```
+git clone https://github.com/akDeveloper/70s-space-invaders.git
+```
+
+### 创建 python 虚拟环境、安装依赖
+
+```
+# --- 在拉取的 70s-space-invaders 文件夹下操作 ---
+
+# 创建虚拟环境
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# 进入虚拟环境
+source .venv/bin/activate
+
+# 安装依赖
+pip install pygame
+```
+
+### 运行项目
+
+```
+python main.py
+```
+
+### Vibe coding 提示词
+
+    - 给项目添加背景音乐和音效
+    - 游戏胜利或失败后屏幕给出提示
+    - 增加游戏难度级别1-10, 每增加一关入侵者移动速度增加1倍, 每一关对应一个级别, 每次游戏结束后增加提示下一关或重新开始和继续游戏按哪个键
+

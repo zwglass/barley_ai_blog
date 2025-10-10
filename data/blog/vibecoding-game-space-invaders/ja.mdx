@@ -1,0 +1,61 @@
+---
+title: 'Vibe Coding – スペースインベーダー'
+date: '2025-10-10'
+tags:
+  - vibe-coding
+summary: 'AIを使ってクラシックなミニゲーム「スペースインベーダー」を再現する。'
+language: ja
+translationKey: vibecoding-game-space-invaders
+authors:
+  - default
+---
+
+Codex を使ってクラシックなミニゲーム「スペースインベーダー」を再現しましょう。
+
+### 必要なツール（Git・Python・VS Code）を下記の公式サイトからインストールする
+
+```
+# Git公式サイト
+https://git-scm.com/
+
+# Python公式サイト
+https://www.python.org/
+
+# VS Code公式サイト
+https://code.visualstudio.com/
+```
+
+### Git でスペースインベーダーのゲームコードを取得する
+
+```
+git clone https://github.com/akDeveloper/70s-space-invaders.git
+```
+
+### Python の仮想環境を作成し、依存関係をインストールする
+
+```
+# --- クローンした 70s-space-invaders フォルダ内で実行 ---
+
+# 仮想環境を作成
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# 仮想環境を有効化
+source .venv/bin/activate
+
+# 依存パッケージをインストール
+pip install pygame
+```
+
+### プロジェクトを実行する
+
+```
+python main.py
+```
+
+### Vibe coding のプロンプト
+
+- プロジェクトに BGM と効果音を追加する。
+- 勝利または敗北後に画面へメッセージを表示する。
+- 難易度レベル 1〜10 を追加し、レベルが上がるたびにインベーダーの移動速度を 2 倍にする。各ゲーム終了後、次のレベル開始・再スタート・続行のどのキーを押すかを表示する。

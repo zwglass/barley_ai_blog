@@ -1,0 +1,61 @@
+---
+title: 'Vibe Coding – Space Invaders'
+date: '2025-10-10'
+tags:
+  - vibe-coding
+summary: 'Setze KI ein, um das klassische Minispiel Space Invaders neu aufzulegen.'
+language: de
+translationKey: vibecoding-game-space-invaders
+authors:
+  - default
+---
+
+Rekonstruiere das klassische Minispiel Space Invaders mit Codex.
+
+### Installiere die Basis-Tools – Git, Python, VS Code – über die offiziellen Seiten unten
+
+```
+# Git-Webseite
+https://git-scm.com/
+
+# Python-Webseite
+https://www.python.org/
+
+# VS Code-Webseite
+https://code.visualstudio.com/
+```
+
+### Klone das Space-Invaders-Spiel mit Git
+
+```
+git clone https://github.com/akDeveloper/70s-space-invaders.git
+```
+
+### Erstelle eine Python-Umgebung und installiere Abhängigkeiten
+
+```
+# --- Führe diese Befehle im geklonten Ordner 70s-space-invaders aus ---
+
+# Virtuelle Umgebung erstellen
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# Virtuelle Umgebung aktivieren
+source .venv/bin/activate
+
+# Abhängigkeiten installieren
+pip install pygame
+```
+
+### Projekt starten
+
+```
+python main.py
+```
+
+### Vibe-Coding-Eingaben
+
+- Füge dem Projekt Hintergrundmusik und Soundeffekte hinzu.
+- Zeige nach einem Sieg oder einer Niederlage eine Bildschirmmeldung an.
+- Ergänze Schwierigkeitsgrade 1–10; jede Stufe verdoppelt die Geschwindigkeit der Invasoren und nach jedem Spiel soll eine Aufforderung anzeigen, welche Taste die nächste Stufe startet, neu startet oder fortsetzt.
