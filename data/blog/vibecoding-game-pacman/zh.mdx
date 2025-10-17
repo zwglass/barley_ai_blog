@@ -1,0 +1,96 @@
+---
+title: '氛围感编程-吃豆人'
+date: '2025-10-17'
+tags:
+    - vibe-coding
+summary: '使用ai复刻经典小游戏 吃豆人。'
+language: zh
+translationKey: vibecoding-game-pacman
+authors:
+    - default
+---
+
+使用 codex 复刻经典小游戏 - 吃豆人。
+
+### 安装基础工具 git python vscode; 从下面的官网下载并安装
+
+```
+# git 官网
+https://git-scm.com/
+
+# python 官网
+https://www.python.org/
+
+# Node.js 官网
+https://nodejs.org/
+
+# vscode 官网
+https://code.visualstudio.com/
+```
+
+### 安装 gpt-5-codex 命令
+
+```
+npm install -g @openai/codex
+```
+
+### 配置 gpt-5-codex 环境变量 (国内使用中转连接需要先配置环境变量)
+
+```
+# 打开 ~/.codex/config.toml 文件开头添加以下配置:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{中转域名}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### 终端进入 codex
+
+```
+export  CRS_OAI_KEY={api_key}
+codex
+```
+
+### git拉取 吃豆人 游戏代码
+
+```
+git clone https://github.com/akDeveloper/80s-pacman.git
+```
+
+### 创建 python 虚拟环境、安装依赖
+
+```
+# --- 在拉取的 80s-pacman 文件夹下操作 ---
+
+# 创建虚拟环境
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# 进入虚拟环境
+source .venv/bin/activate
+
+# 安装依赖
+pip install pygame
+```
+
+### 运行项目
+
+```
+python main.py
+```
+
+### Vibe coding 提示词
+
+    - 给项目添加背景音乐和音效
+    - 游戏胜利或失败后屏幕给出提示
+    - 增加游戏难度级别1-10, 每增加一关入侵者移动速度增加1倍, 每一关对应一个级别, 每次游戏结束后增加提示下一关或重新开始和继续游戏按哪个键
+
