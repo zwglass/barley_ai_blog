@@ -1,0 +1,96 @@
+---
+title: 'Vibe Coding - Pac-Man'
+date: '2025-10-17'
+tags:
+    - vibe-coding
+summary: 'Use AI to recreate the classic mini-game Pac-Man.'
+language: en
+translationKey: vibecoding-game-pacman
+authors:
+    - default
+---
+
+Use Codex to recreate the classic mini-game Pac-Man.
+
+### Install the basics: Git, Python, Node.js, VS Code; download from the official sites below
+
+```
+# Git official site
+https://git-scm.com/
+
+# Python official site
+https://www.python.org/
+
+# Node.js official site
+https://nodejs.org/
+
+# VS Code official site
+https://code.visualstudio.com/
+```
+
+### Clone the Pac-Man game repo with Git
+
+```
+git clone https://github.com/akDeveloper/80s-pacman.git
+```
+
+### Install the gpt-5-codex command
+
+```
+npm install -g @openai/codex
+```
+
+### Configure gpt-5-codex environment variables (set up relay settings first if you are in mainland China)
+
+```
+# Open ~/.codex/config.toml and add the following at the top:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Launch Codex in the terminal
+
+```
+export CRS_OAI_KEY={api_key}
+codex
+```
+
+### Create a Python virtual environment and install dependencies
+
+```
+# --- Operate inside the cloned 80s-pacman folder ---
+
+# Create the virtual environment
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# Activate the virtual environment
+source .venv/bin/activate
+
+# Install dependencies
+pip install pygame
+```
+
+### Run the project
+
+```
+python main.py
+```
+
+### Vibe Coding prompts
+
+    - Add background music and sound effects to the project
+    - Add an invincibility mode and show the key combo to toggle it on the start screen
+    - Display a message on the screen after winning or losing
+    - Increase the game to ten levels; with each level, double the enemy speed and add one more enemy; after each game, show which key moves to the next level or restarts and continues the game

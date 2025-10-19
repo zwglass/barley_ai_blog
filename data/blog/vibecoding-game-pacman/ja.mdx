@@ -1,0 +1,96 @@
+---
+title: 'Vibe Coding - パックマン'
+date: '2025-10-17'
+tags:
+    - vibe-coding
+summary: 'AI を使ってクラシックなミニゲーム「パックマン」を再現します。'
+language: ja
+translationKey: vibecoding-game-pacman
+authors:
+    - default
+---
+
+Codex を使ってクラシックなミニゲーム「パックマン」を再現します。
+
+### 基本ツール（Git、Python、Node.js、VS Code）のインストール：以下の公式サイトから入手
+
+```
+# Git 公式サイト
+https://git-scm.com/
+
+# Python 公式サイト
+https://www.python.org/
+
+# Node.js 公式サイト
+https://nodejs.org/
+
+# VS Code 公式サイト
+https://code.visualstudio.com/
+```
+
+### Git で Pac-Man ゲームのリポジトリをクローン
+
+```
+git clone https://github.com/akDeveloper/80s-pacman.git
+```
+
+### gpt-5-codex コマンドをインストール
+
+```
+npm install -g @openai/codex
+```
+
+### gpt-5-codex の環境変数を設定（中国本土ではリレー設定を先に構成）
+
+```
+# ~/.codex/config.toml を開き、冒頭に次を追加します:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### ターミナルで Codex を起動
+
+```
+export CRS_OAI_KEY={api_key}
+codex
+```
+
+### Python 仮想環境を作成して依存関係をインストール
+
+```
+# --- クローンした 80s-pacman フォルダー内で作業 ---
+
+# 仮想環境を作成
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# 仮想環境を有効化
+source .venv/bin/activate
+
+# 依存関係をインストール
+pip install pygame
+```
+
+### プロジェクトを実行
+
+```
+python main.py
+```
+
+### Vibe Coding のプロンプト
+
+    - プロジェクトに BGM と効果音を追加する
+    - 無敵モードを追加し、スタート画面に切り替え用のキーコンボを表示する
+    - 勝利または敗北後に画面へメッセージを表示する
+    - ゲームを 10 レベルに増やし、レベルが上がるごとに敵の速度を 2 倍にし、敵を 1 体追加する。各ゲームの終了後に、次のレベルに進むキーや再開・続行するキーを案内する

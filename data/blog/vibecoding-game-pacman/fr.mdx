@@ -1,0 +1,96 @@
+---
+title: 'Vibe Coding - Pac-Man'
+date: '2025-10-17'
+tags:
+    - vibe-coding
+summary: 'Utilise l’IA pour recréer le mini-jeu classique Pac-Man.'
+language: fr
+translationKey: vibecoding-game-pacman
+authors:
+    - default
+---
+
+Utilise Codex pour recréer le mini-jeu classique Pac-Man.
+
+### Installer les bases : Git, Python, Node.js, VS Code ; télécharge-les depuis les sites officiels ci-dessous
+
+```
+# Site officiel de Git
+https://git-scm.com/
+
+# Site officiel de Python
+https://www.python.org/
+
+# Site officiel de Node.js
+https://nodejs.org/
+
+# Site officiel de VS Code
+https://code.visualstudio.com/
+```
+
+### Cloner le dépôt du jeu Pac-Man avec Git
+
+```
+git clone https://github.com/akDeveloper/80s-pacman.git
+```
+
+### Installer la commande gpt-5-codex
+
+```
+npm install -g @openai/codex
+```
+
+### Configurer les variables d’environnement de gpt-5-codex (configure d’abord le relais si tu es en Chine continentale)
+
+```
+# Ouvre le fichier ~/.codex/config.toml et ajoute ce qui suit en haut :
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Lancer Codex dans le terminal
+
+```
+export CRS_OAI_KEY={api_key}
+codex
+```
+
+### Créer un environnement virtuel Python et installer les dépendances
+
+```
+# --- Travaille dans le dossier 80s-pacman cloné ---
+
+# Crée l'environnement virtuel
+mkdir .venv && cd .venv
+python3 -m venv .
+cd ..
+
+# Active l'environnement virtuel
+source .venv/bin/activate
+
+# Installe les dépendances
+pip install pygame
+```
+
+### Exécuter le projet
+
+```
+python main.py
+```
+
+### Suggestions Vibe Coding
+
+    - Ajoute une musique de fond et des effets sonores au projet
+    - Ajoute un mode invincibilité et affiche sur l’écran d’accueil la combinaison de touches pour l’activer
+    - Affiche un message à l’écran après une victoire ou une défaite
+    - Porte le jeu à dix niveaux ; à chaque niveau, double la vitesse des ennemis et ajoute un ennemi supplémentaire ; après chaque partie, indique quelle touche permet de passer au niveau suivant ou de relancer et poursuivre la partie
