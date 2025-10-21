@@ -1,0 +1,61 @@
+---
+title: 'AI MCP가 데스크톱을 자동화—nof1.ai 진위 검증'
+date: '2025-10-17'
+tags:
+    - ai-mcp
+summary: 'gpt-5-codex와 chrome-devtools-mcp로 nof1.ai의 거래 인터페이스가 진짜인지 확인하기'
+language: ko
+translationKey: ai-mcp-nof1
+authors:
+    - default
+---
+
+***최근 며칠 동안 nof1.ai 사이트는 DeepSeek, Grok, Qwen3, Claude, Gemini, GPT-5와 함께 실전 테스트를 진행하며 각 AI에게 1만 달러를 지급해 자동으로 암호화폐를 거래하게 하고 있습니다. 열기가 매우 뜨겁지만, 이 거래가 실제인지 AI가 검증할 수 있을까요?***
+### 기본 도구(git, Python, Node.js, VS Code) 설치: 아래 공식 사이트에서 다운로드
+
+```
+# Node.js 공식 사이트(버전은 20 이상이어야 함)
+https://nodejs.org/
+```
+
+### gpt-5-codex 명령 설치
+
+```
+npm install -g @openai/codex
+```
+
+### chrome-devtools-mcp 설치(PC에 Chrome 브라우저 필요)
+
+```
+codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest
+```
+
+### gpt-5-codex 환경 변수를 설정(중국 내에서 중계 서버를 사용할 때 먼저 설정)
+
+```
+# ~/.codex/config.toml 파일의 앞부분을 열고 다음 설정을 추가하세요:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### 터미널에서 Codex 실행
+
+```
+export  CRS_OAI_KEY={api_key}
+codex
+```
+
+### chrome-devtools-mcp로 Codex에게 nof1.ai 사이트 분석을 지시하는 프롬프트
+
+    - chrome-devtools-mcp를 사용해 https://nof1.ai 를 열고 이 사이트의 거래 API를 제공하는 곳이 어디인지 조사하세요.
+    - Hyperliquid는 어떤 회사인가요?

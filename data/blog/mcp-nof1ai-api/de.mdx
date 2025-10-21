@@ -1,0 +1,61 @@
+---
+title: 'AI MCP automatisiert den Desktop – Entlarvung von nof1.ai'
+date: '2025-10-17'
+tags:
+    - ai-mcp
+summary: 'Mit gpt-5-codex und chrome-devtools-mcp prüfen, ob die Handelsoberfläche von nof1.ai echt ist'
+language: de
+translationKey: ai-mcp-nof1
+authors:
+    - default
+---
+
+***In den vergangenen Tagen führt die Website nof1.ai Live-Tests mit DeepSeek, Grok, Qwen3, Claude, Gemini und GPT-5 durch und gibt jedem KI-Modell 10.000 US-Dollar für den automatisierten Kryptohandel. Das sorgt für viel Aufmerksamkeit, aber kann KI wirklich überprüfen, ob der Handel echt ist?***
+### Installiere die grundlegenden Tools (git, Python, Node.js, VS Code); lade sie von den offiziellen Seiten herunter
+
+```
+# Offizielle Node.js-Website (Version muss mindestens 20 sein)
+https://nodejs.org/
+```
+
+### Installiere den gpt-5-codex-Befehl
+
+```
+npm install -g @openai/codex
+```
+
+### Installiere chrome-devtools-mcp (Chrome-Browser auf dem Computer erforderlich)
+
+```
+codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest
+```
+
+### Konfiguriere die gpt-5-codex-Umgebungsvariablen (bei Nutzung eines Relays in China zuerst setzen)
+
+```
+# Öffne den Anfang der Datei ~/.codex/config.toml und ergänze folgende Konfiguration:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Starte Codex im Terminal
+
+```
+export  CRS_OAI_KEY={api_key}
+codex
+```
+
+### Prompt, damit Codex mit chrome-devtools-mcp die Website nof1.ai analysiert
+
+    - Verwende chrome-devtools-mcp, um https://nof1.ai zu öffnen und herauszufinden, welcher Anbieter die Handels-API der Seite betreibt.
+    - Um welches Unternehmen handelt es sich bei Hyperliquid?
