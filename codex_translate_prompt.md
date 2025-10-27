@@ -7,7 +7,6 @@ export  CRS_OAI_KEY=key
 codex
 ```
 
-
 ### 中文翻译为英文, 再从英文翻译为其他文字
 
 ```

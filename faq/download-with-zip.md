@@ -9,9 +9,7 @@ The project includes a `CompressedDownloadLink` component that automatically com
 ## 2. Use the component in MDX
 
 ```mdx
-<CompressedDownloadLink file="guides/whitepaper.pdf">
-  下载白皮书
-</CompressedDownloadLink>
+<CompressedDownloadLink file="guides/whitepaper.pdf">下载白皮书</CompressedDownloadLink>
 ```
 
 - `file`: path of the original file relative to `public/downloads`.

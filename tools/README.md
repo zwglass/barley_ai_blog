@@ -3,11 +3,11 @@
 ### tools 文件夹
 
 ```
-tools 文件夹中的脚本功能: 
+tools 文件夹中的脚本功能:
     修改图片, 生成博客 mdx 文件,
 ```
 
-### Branch Setup(创建分支, 给GitHub Page 使用)  域名 blog.cchw.net
+### Branch Setup(创建分支, 给GitHub Page 使用) 域名 blog.cchw.net
 
 ```
     - Create branch: git checkout -b gh-pages.
