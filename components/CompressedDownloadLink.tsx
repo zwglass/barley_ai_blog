@@ -1,26 +1,27 @@
 'use client'
 
 import { useState, type MouseEvent } from 'react'
-import type { ReactNode } from 'react'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 type CompressedDownloadLinkProps = {
-  file: string
+  /** 要打包的文件路径数组（可以是相对路径或完整 URL） */
+  files: string[]
+  /** 下载时生成的 zip 文件名 */
   fileName?: string
+  /** 样式类名 */
   className?: string
-  children: ReactNode
+  /** 按钮显示文字 */
+  children: React.ReactNode
 }
 
-const buildDownloadName = (fileName?: string, fallback?: string) => {
-  if (!fileName || fileName.trim().length === 0) {
-    const candidate = fallback ?? 'download'
-    return candidate.endsWith('.zip') ? candidate : `${candidate}.zip`
-  }
-
+const buildDownloadName = (fileName?: string) => {
+  if (!fileName || fileName.trim().length === 0) return 'download.zip'
   return fileName.endsWith('.zip') ? fileName : `${fileName}.zip`
 }
 
 const CompressedDownloadLink = ({
-  file,
+  files,
   fileName,
   className,
   children,
@@ -34,38 +35,22 @@ const CompressedDownloadLink = ({
     setError(null)
 
     try {
-      const response = await fetch(`/api/compress-download?file=${encodeURIComponent(file)}`)
+      const zip = new JSZip()
 
-      if (!response.ok) {
-        let message = 'Unable to generate download archive.'
-        try {
-          const data = await response.json()
-          if (typeof data?.message === 'string') {
-            message = data.message
-          }
-        } catch (jsonError) {
-          // Ignore JSON parse errors
-        }
-        throw new Error(message)
+      for (const fileUrl of files) {
+        const response = await fetch(fileUrl)
+        if (!response.ok) throw new Error(`无法获取文件: ${fileUrl}`)
+        const blob = await response.blob()
+        const name = fileUrl.split('/').pop() || 'file'
+        zip.file(name, blob)
       }
 
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const label = buildDownloadName(fileName, file.split('/').pop())
-
-      const anchor = document.createElement('a')
-      anchor.href = url
-      anchor.download = label
-      document.body.append(anchor)
-      anchor.click()
-      anchor.remove()
-      URL.revokeObjectURL(url)
-    } catch (downloadError) {
-      const message =
-        downloadError instanceof Error
-          ? downloadError.message
-          : 'Unable to complete download request.'
-      setError(message)
+      const content = await zip.generateAsync({ type: 'blob' })
+      const label = buildDownloadName(fileName)
+      saveAs(content, label)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '压缩下载失败，请检查文件路径是否正确。'
+      setError(msg)
     } finally {
       setIsLoading(false)
     }
@@ -81,9 +66,9 @@ const CompressedDownloadLink = ({
         }`}
         disabled={isLoading}
       >
-        {isLoading ? 'Generating download…' : children}
+        {isLoading ? '正在打包…' : children}
       </button>
-      {error ? <span className="mt-1 text-sm text-red-600">{error}</span> : null}
+      {error && <span className="mt-1 text-sm text-red-600">{error}</span>}
     </div>
   )
 }
