@@ -1,0 +1,154 @@
+---
+title: 'Vibe Coding – Arène de trading d’actifs virtuels propulsée par l’IA'
+date: '2025-10-24'
+tags:
+    - vibe-coding
+summary: 'Recréez le site nof1.ai avec Codex en vous appuyant sur les projets open source qlib et FinRL'
+language: fr
+translationKey: vibecoding-arena-qlib-finrl
+authors:
+    - default
+---
+
+Recréez automatiquement le site nof1.ai avec Codex.
+
+### Installez l’essentiel : Python, Node.js, VS Code (téléchargez-les depuis les sites officiels ci-dessous)
+
+```
+# Site officiel de Python
+https://www.python.org/
+
+# Site officiel de Node.js ; version requise (>= 20.19.0)
+https://nodejs.org/
+
+# Site officiel de VS Code
+https://code.visualstudio.com/
+```
+
+### Installez la CLI `gpt-5-codex`
+
+```
+# Installez gpt-5-codex globalement
+npm install -g @openai/codex
+```
+
+### Configurez les variables d’environnement de `gpt-5-codex` (à paramétrer en priorité si vous utilisez un relais en Chine continentale)
+
+```
+# Ouvrez le début du fichier ~/.codex/config.toml et ajoutez :
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### Créez le dossier du projet, l’environnement virtuel Python, les fichiers d’entrée, etc.
+
+```
+arena-qlib-finrl/
+│
+├── venv/                              # Environnement virtuel Python 3 (venv)
+│
+├── data/                              # Cache de données de marché (généré par qlib_init)
+│   ├── raw/                           # Données brutes yfinance
+│   └── features/                      # Jeux de données après feature engineering
+│
+├── conf/                              # Zone de configuration
+│   ├── config.yaml                    # Configuration principale (périodes, agents, etc.)
+│   ├── symbols_us.txt                 # Liste des tickers (AAPL, MSFT, NVDA…)
+│   └── .env                           # Clé API DeepSeek ou autres secrets
+│
+├── src/                               # Code source principal
+│   │
+│   ├── qlib_init.py                   # Initialise Qlib et récupère les données (yfinance)
+│   ├── market_feed.py                 # Pipeline de données (pont entre Qlib et FinRL)
+│   ├── env_shared.py                  # Courtier virtuel / compte / moteur d’appariement
+│   │
+│   ├── agents/                        # Collection d’agents
+│   │   ├── __init__.py
+│   │   ├── agent_ppo.py               # FinRL + SB3 : stratégie PPO
+│   │   ├── agent_sac.py               # FinRL + SB3 : stratégie SAC
+│   │   ├── agent_rule.py              # Baseline simple à base de règles (momentum / retour à la moyenne)
+│   │   └── agent_deepseek.py          # Agent DeepSeek API (décisions guidées par LLM)
+│   │
+│   ├── arena.py                       # Boucle principale de l’arène (horloge, exécution, journalisation)
+│   ├── evaluate.py                    # Évaluation des performances (rendement, Sharpe, drawdown, etc.)
+│   ├── leaderboard.py                 # Agrégation/export du classement (CSV/Markdown)
+│   ├── utils.py                       # Utilitaires (journalisation, métriques, analyseurs)
+│   └── web_dashboard_utils.py         # Nouveau module (chargement de données / helpers graphiques)
+│
+├── reports/                           # Répertoire de sortie (généré automatiquement)
+│   ├── 2025-10-24_ppo-vs-deepseek/    # Résultats d’un match individuel
+│   │   ├── nav_curves.png
+│   │   ├── trades.csv
+│   │   ├── summary.json               ← ★ Nouvelle sortie (pour le tableau de bord web)
+│   │   └── leaderboard.csv
+│   └── latest -> 2025-10-24_ppo-vs-deepseek (lien symbolique)
+│
+├── logs/                              # Journaux d’exécution
+│   ├── qlib_init.log
+│   ├── arena.log
+│   └── deepseek_agent.log
+│
+├── run.sh                             # Script clé en main (données → entraînement → match → évaluation)
+├── requirements.txt                   # Liste des dépendances (pour le déploiement)
+├── README.md                          # Documentation du projet
+├── tools                              # Scripts utilitaires pour le développement
+│    └── generate_project_structure.py # Script de génération du squelette projet
+├─ web_dashboard.py                    ← ★ Nouveau programme principal (interface web Streamlit)
+
+```
+<CompressedDownloadLink file="arena-qlib-finrl/generate_project_structure.py">Script de création de projet en un clic</CompressedDownloadLink>
+
+### Accédez au dossier du projet dans le terminal
+
+```
+arena_qlib_finrl="/project/path/arena-qlib-finrl"
+mkdir -p "${arena_qlib_finrl}/venv" && cd "${arena_qlib_finrl}/venv"
+
+# Créez l’environnement virtuel Python
+python3 -m venv .
+cd ..
+
+# Activez l’environnement virtuel
+source venv/bin/activate
+
+# Créez le dossier tools, copiez generate_project_structure.py et exécutez-le
+python tools/generate_project_structure.py
+
+# Installez les dépendances
+pip install -r requirements.txt
+
+```
+
+### Définissez la clé API
+
+```
+# Modifiez le fichier conf/.env
+```
+
+### Téléchargez les données de marché
+
+```
+python -m src.qlib_init
+```
+
+### Lancez l’arène de trading IA
+
+```
+python -m src.arena
+```
+
+### Consultez les résultats de trading dans votre navigateur
+
+```
+streamlit run web_dashboard.py
+```

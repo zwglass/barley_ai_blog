@@ -12,6 +12,7 @@ codex
 
 ```
 请把 data/blog/vibecoding-game-pacman/zh.mdx 翻译为英文 data/blog/vibecoding-game-pacman/en.mdx; 再从 en.mdx 翻译为 de.mdx, fr.mdx, ja.mdx, ko.mdx;
+请把 data/blog/vibecoding-arena-qlib-finrl/zh.mdx 翻译为英文 data/blog/vibecoding-arena-qlib-finrl/en.mdx; 再从 en.mdx 翻译为 de.mdx, fr.mdx, ja.mdx, ko.mdx;
 ```
 
 ### 翻译完成后测试和上传

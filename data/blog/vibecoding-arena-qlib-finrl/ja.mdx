@@ -1,0 +1,154 @@
+---
+title: 'Vibe Coding – AI仮想資産トレーディングアリーナ'
+date: '2025-10-24'
+tags:
+    - vibe-coding
+summary: 'Codexを使ってnof1.aiサイトを再構築し、qlibとFinRLという2つのオープンソースプロジェクトを基盤にする'
+language: ja
+translationKey: vibecoding-arena-qlib-finrl
+authors:
+    - default
+---
+
+Codexでnof1.aiサイトを自動的に再構築します。
+
+### 必須ツールをインストールする：Python、Node.js、VS Code（以下の公式サイトからダウンロード）
+
+```
+# Python公式サイト
+https://www.python.org/
+
+# Node.js公式サイト：必要なバージョン (>= 20.19.0)
+https://nodejs.org/
+
+# VS Code公式サイト
+https://code.visualstudio.com/
+```
+
+### `gpt-5-codex` CLIをインストールする
+
+```
+# gpt-5-codexをグローバルにインストール
+npm install -g @openai/codex
+```
+
+### `gpt-5-codex` の環境変数を設定する（中国本土でリレー接続を利用する場合は先に設定）
+
+```
+# ~/.codex/config.toml の冒頭を開き、次を追加します：
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### プロジェクトフォルダ、Python仮想環境、エントリーファイルなどを作成する
+
+```
+arena-qlib-finrl/
+│
+├── venv/                              # Python 3 仮想環境 (venv)
+│
+├── data/                              # 市場データキャッシュ（qlib_initが生成）
+│   ├── raw/                           # 元の yfinance データ
+│   └── features/                      # 特徴量エンジニアリング後のデータセット
+│
+├── conf/                              # 設定ファイル群
+│   ├── config.yaml                    # メイン設定（期間、エージェントなど）
+│   ├── symbols_us.txt                 # ティッカー一覧（AAPL、MSFT、NVDA …）
+│   └── .env                           # DeepSeek APIキーなどのシークレット
+│
+├── src/                               # コアソースコード
+│   │
+│   ├── qlib_init.py                   # Qlib初期化とデータ取得 (yfinance)
+│   ├── market_feed.py                 # データパイプライン（Qlib→FinRLブリッジ）
+│   ├── env_shared.py                  # 仮想ブローカー／口座／マッチングエンジン
+│   │
+│   ├── agents/                        # 各種エージェント実装
+│   │   ├── __init__.py
+│   │   ├── agent_ppo.py               # FinRL + SB3: PPOエージェント
+│   │   ├── agent_sac.py               # FinRL + SB3: SACエージェント
+│   │   ├── agent_rule.py              # シンプルなルールベース手法（モメンタム／平均回帰）
+│   │   └── agent_deepseek.py          # DeepSeek APIエージェント（LLM意思決定）
+│   │
+│   ├── arena.py                       # トレーディングアリーナのメインループ（クロック、執行、記録）
+│   ├── evaluate.py                    # パフォーマンス評価（リターン、シャープ、ドローダウン等）
+│   ├── leaderboard.py                 # リーダーボード集計／エクスポート (CSV/Markdown)
+│   ├── utils.py                       # ユーティリティ（ログ、指標、パーサー）
+│   └── web_dashboard_utils.py         # 新規モジュール（データ読み込み／チャート支援）
+│
+├── reports/                           # 出力ディレクトリ（自動生成）
+│   ├── 2025-10-24_ppo-vs-deepseek/    # 単体対戦の結果
+│   │   ├── nav_curves.png
+│   │   ├── trades.csv
+│   │   ├── summary.json               ← ★ 新しい出力（Webダッシュボード向け）
+│   │   └── leaderboard.csv
+│   └── latest -> 2025-10-24_ppo-vs-deepseek (シンボリックリンク)
+│
+├── logs/                              # 実行ログ
+│   ├── qlib_init.log
+│   ├── arena.log
+│   └── deepseek_agent.log
+│
+├── run.sh                             # ワンストップスクリプト（データ→学習→対戦→評価）
+├── requirements.txt                   # 依存関係リスト（デプロイ用）
+├── README.md                          # プロジェクトドキュメント
+├── tools                              # 開発用ユーティリティスクリプト
+│    └── generate_project_structure.py # ディレクトリとファイルを生成するスクリプト
+├─ web_dashboard.py                    ← ★ 新しいメインプログラム（Streamlit Web UI）
+
+```
+<CompressedDownloadLink file="arena-qlib-finrl/generate_project_structure.py">プロジェクト作成ワンクリックスクリプト</CompressedDownloadLink>
+
+### ターミナルでプロジェクトディレクトリに移動する
+
+```
+arena_qlib_finrl="/project/path/arena-qlib-finrl"
+mkdir -p "${arena_qlib_finrl}/venv" && cd "${arena_qlib_finrl}/venv"
+
+# Python仮想環境を作成
+python3 -m venv .
+cd ..
+
+# 仮想環境をアクティブ化
+source venv/bin/activate
+
+# toolsフォルダを作成し、generate_project_structure.pyをコピーして実行
+python tools/generate_project_structure.py
+
+# 依存関係をインストール
+pip install -r requirements.txt
+
+```
+
+### APIキーを設定する
+
+```
+# conf/.env ファイルを編集
+```
+
+### 市場データをダウンロードする
+
+```
+python -m src.qlib_init
+```
+
+### AIトレーディングアリーナを起動する
+
+```
+python -m src.arena
+```
+
+### ブラウザでトレード結果を確認する
+
+```
+streamlit run web_dashboard.py
+```

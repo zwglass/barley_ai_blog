@@ -1,0 +1,154 @@
+---
+title: 'Vibe Coding – AI 가상자산 트레이딩 아레나'
+date: '2025-10-24'
+tags:
+    - vibe-coding
+summary: 'Codex로 nof1.ai 사이트를 재구현하고 오픈소스 프로젝트 qlib과 FinRL을 기반으로 구축합니다'
+language: ko
+translationKey: vibecoding-arena-qlib-finrl
+authors:
+    - default
+---
+
+Codex를 사용해 nof1.ai 웹사이트를 자동으로 재구현합니다.
+
+### 필수 도구 설치: Python, Node.js, VS Code (아래 공식 사이트에서 다운로드)
+
+```
+# Python 공식 사이트
+https://www.python.org/
+
+# Node.js 공식 사이트; 요구 버전 (>= 20.19.0)
+https://nodejs.org/
+
+# VS Code 공식 사이트
+https://code.visualstudio.com/
+```
+
+### `gpt-5-codex` CLI 설치
+
+```
+# gpt-5-codex를 전역으로 설치
+npm install -g @openai/codex
+```
+
+### `gpt-5-codex` 환경 변수를 설정 (중국 본토에서 중계 서버를 사용할 경우 먼저 설정)
+
+```
+# ~/.codex/config.toml 파일의 처음에 다음 내용을 추가합니다:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{relay-domain}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### 프로젝트 폴더, Python 가상환경, 진입 파일 등을 생성
+
+```
+arena-qlib-finrl/
+│
+├── venv/                              # Python 3 가상환경 (venv)
+│
+├── data/                              # 시장 데이터 캐시 (qlib_init이 생성)
+│   ├── raw/                           # 원본 yfinance 데이터
+│   └── features/                      # 특성 엔지니어링된 데이터셋
+│
+├── conf/                              # 설정 파일 영역
+│   ├── config.yaml                    # 메인 설정 (기간, 에이전트 등)
+│   ├── symbols_us.txt                 # 티커 목록 (AAPL, MSFT, NVDA …)
+│   └── .env                           # DeepSeek API 키 등 비밀 값
+│
+├── src/                               # 핵심 소스 코드
+│   │
+│   ├── qlib_init.py                   # Qlib 초기화 및 데이터 수집 (yfinance)
+│   ├── market_feed.py                 # 데이터 파이프라인 (Qlib→FinRL 브리지)
+│   ├── env_shared.py                  # 가상 브로커/계좌/매칭 엔진
+│   │
+│   ├── agents/                        # 다양한 에이전트 구현
+│   │   ├── __init__.py
+│   │   ├── agent_ppo.py               # FinRL + SB3: PPO 전략
+│   │   ├── agent_sac.py               # FinRL + SB3: SAC 전략
+│   │   ├── agent_rule.py              # 간단한 규칙 기반 베이스라인 (모멘텀/평균회귀)
+│   │   └── agent_deepseek.py          # DeepSeek API 에이전트 (LLM 의사결정)
+│   │
+│   ├── arena.py                       # 트레이딩 아레나 메인 루프 (클록, 실행, 기록)
+│   ├── evaluate.py                    # 성능 평가 (수익률, 샤프, 최대낙폭 등)
+│   ├── leaderboard.py                 # 리더보드 집계/내보내기 (CSV/Markdown)
+│   ├── utils.py                       # 유틸리티 (로그, 지표, 파서)
+│   └── web_dashboard_utils.py         # 신규 모듈 (데이터 로딩/차트 헬퍼)
+│
+├── reports/                           # 출력 디렉터리 (자동 생성)
+│   ├── 2025-10-24_ppo-vs-deepseek/    # 단일 대결 결과
+│   │   ├── nav_curves.png
+│   │   ├── trades.csv
+│   │   ├── summary.json               ← ★ 새로운 출력 (웹 대시보드용)
+│   │   └── leaderboard.csv
+│   └── latest -> 2025-10-24_ppo-vs-deepseek (심볼릭 링크)
+│
+├── logs/                              # 실행 로그
+│   ├── qlib_init.log
+│   ├── arena.log
+│   └── deepseek_agent.log
+│
+├── run.sh                             # 원스톱 스크립트 (데이터 → 학습 → 대전 → 평가)
+├── requirements.txt                   # 의존성 목록 (배포용)
+├── README.md                          # 프로젝트 문서
+├── tools                              # 개발용 유틸리티 스크립트
+│    └── generate_project_structure.py # 디렉터리와 파일을 생성하는 스크립트
+├─ web_dashboard.py                    ← ★ 신규 메인 프로그램 (Streamlit 웹 UI)
+
+```
+<CompressedDownloadLink file="arena-qlib-finrl/generate_project_structure.py">프로젝트 구조 생성 원클릭 스크립트</CompressedDownloadLink>
+
+### 터미널에서 프로젝트 디렉터리로 이동
+
+```
+arena_qlib_finrl="/project/path/arena-qlib-finrl"
+mkdir -p "${arena_qlib_finrl}/venv" && cd "${arena_qlib_finrl}/venv"
+
+# Python 가상환경 생성
+python3 -m venv .
+cd ..
+
+# 가상환경 활성화
+source venv/bin/activate
+
+# tools 폴더를 만들고 generate_project_structure.py를 복사해 실행
+python tools/generate_project_structure.py
+
+# 의존성 설치
+pip install -r requirements.txt
+
+```
+
+### API 키 설정
+
+```
+# conf/.env 파일 수정
+```
+
+### 시장 데이터 다운로드
+
+```
+python -m src.qlib_init
+```
+
+### AI 트레이딩 아레나 실행
+
+```
+python -m src.arena
+```
+
+### 브라우저에서 거래 결과 확인
+
+```
+streamlit run web_dashboard.py
+```

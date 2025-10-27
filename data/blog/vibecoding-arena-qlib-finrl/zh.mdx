@@ -1,0 +1,154 @@
+---
+title: '氛围感编程-AI虚拟币交易竞赛'
+date: '2025-10-24'
+tags:
+    - vibe-coding
+summary: '使用codex复刻 nof1.ai 网站, 以qlib finrl这2个开源项目为基础创建'
+language: zh
+translationKey: vibecoding-arena-qlib-finrl
+authors:
+    - default
+---
+
+使用codex自动复刻 nof1.ai 网站
+
+### 安装基础工具 python nodejs vscode; 从下面的官网下载并安装
+
+```
+# python 官网
+https://www.python.org/
+
+# Node.js 官网; Node.js版本（需要 >= 20.19.0）
+https://nodejs.org/
+
+# vscode 官网
+https://code.visualstudio.com/
+```
+
+### 安装 gpt-5-codex 命令
+
+```
+# 全局安装 gpt-5-codex
+npm install -g @openai/codex
+```
+
+### 配置 gpt-5-codex 环境变量 (国内使用中转连接需要先配置环境变量)
+
+```
+# 打开 ~/.codex/config.toml 文件开头添加以下配置:
+
+model_provider = "crs"
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+disable_response_storage = true
+preferred_auth_method = "apikey"
+[model_providers.crs]
+name = "crs"
+base_url = "https://{中转域名}/openai"
+wire_api = "responses"
+requires_openai_auth = true
+env_key = "CRS_OAI_KEY"
+```
+
+### 创建项目文件夹、python虚拟环境、入口文件等
+
+```
+arena-qlib-finrl/
+│
+├── venv/                              # Python3 虚拟环境（venv）
+│
+├── data/                              # 市场数据缓存（由 qlib_init 生成）
+│   ├── raw/                           # 原始 yfinance 数据
+│   └── features/                      # 特征工程后的数据集
+│
+├── conf/                              # 配置文件区
+│   ├── config.yaml                    # 主配置文件（时间区间、代理配置等）
+│   ├── symbols_us.txt                 # 股票标的列表（AAPL、MSFT、NVDA…）
+│   └── .env                           # DeepSeek API Key 或其他密钥
+│
+├── src/                               # 核心源码
+│   │
+│   ├── qlib_init.py                   # 初始化 Qlib & 数据抓取 (yfinance)
+│   ├── market_feed.py                 # 数据流生成器（Qlib→FinRL 桥接）
+│   ├── env_shared.py                  # 虚拟券商/账户/撮合引擎
+│   │
+│   ├── agents/                        # 各类模型智能体（Agents）
+│   │   ├── __init__.py
+│   │   ├── agent_ppo.py               # FinRL + SB3: PPO 模型
+│   │   ├── agent_sac.py               # FinRL + SB3: SAC 模型
+│   │   ├── agent_rule.py              # 简单规则基线策略（例如动量/均值回归）
+│   │   └── agent_deepseek.py          # DeepSeek API 智能体 (LLM 决策)
+│   │
+│   ├── arena.py                       # AI交易竞赛主循环 (统一时钟、执行、记录)
+│   ├── evaluate.py                    # 绩效评估 (收益率、夏普、回撤等)
+│   ├── leaderboard.py                 # 结果榜单汇总/导出 (CSV/Markdown)
+│   ├── utils.py                       # 工具函数 (日志、指标计算、解析工具)
+│   └── web_dashboard_utils.py         # 新增 (提供数据加载/图表工具)
+│
+├── reports/                           # 输出结果目录（自动生成）
+│   ├── 2025-10-24_ppo-vs-deepseek/    # 单次对抗赛结果目录
+│   │   ├── nav_curves.png
+│   │   ├── trades.csv
+│   │   ├── summary.json               ← ★ 新输出 (供 web 读取)
+│   │   └── leaderboard.csv
+│   └── latest -> 2025-10-24_ppo-vs-deepseek (软链接)
+│
+├── logs/                              # 运行日志
+│   ├── qlib_init.log
+│   ├── arena.log
+│   └── deepseek_agent.log
+│
+├── run.sh                             # 一键执行脚本（数据→训练→对抗→评估）
+├── requirements.txt                   # 所有依赖清单（便于部署）
+├── README.md                          # 项目说明文档
+├── tools                              # 开发使用的工具
+│    └── generate_project_structure.py             # 创建文件夹和文件脚本
+├─ web_dashboard.py         ← ★ 新增主程序 (Streamlit Web 界面)
+
+```
+<CompressedDownloadLink file="arena-qlib-finrl/generate_project_structure.py">项目文件创建一键脚本</CompressedDownloadLink>
+
+### 终端进入项目文件夹
+
+```
+arena_qlib_finrl="/project/path/arena-qlib-finrl"
+mkdir -p "${arena_qlib_finrl}/venv" && cd "${arena_qlib_finrl}/venv"
+
+# 创建python虚拟环境
+python3 -m venv .
+cd ..
+
+# 激活python拟环境
+source venv/bin/activate
+
+# 创建tools文件夹, 把generate_project_structure.py复制到tools文件夹下并运行
+python tools/generate_project_structure.py
+
+# 安装依赖
+pip install -r requirements.txt
+
+```
+
+### 设置 api_key
+
+```
+# 修改 conf/.env 文件
+```
+
+### 下载数据
+
+```
+python -m src.qlib_init
+```
+
+### 启动AI交易
+
+```
+python -m src.arena
+```
+
+### 浏览器观察交易结果
+
+```
+streamlit run web_dashboard.py
+```
