@@ -1,0 +1,162 @@
+---
+title: 'Mit KI die Version „Useless“ von Lehrerin Aoi erstellen'
+date: '2025-11-04'
+tags:
+  - AI-Media
+summary: 'Mit KI die Version „Useless“ von Lehrerin Aoi erstellen'
+language: de
+translationKey: ai-media-aoi-useless
+authors:
+  - default
+---
+
+Mit KI die Version „Useless“ von Lehrerin Aoi erstellen
+
+### Installiere die Grundlagen: Python, VS Code, Git, Docker; lade sie über die offiziellen Seiten unten herunter
+
+```
+# Offizielle CUDA-Website
+https://developer.nvidia.com/cuda-toolkit
+
+# Offizielle Python-Website
+https://www.python.org/
+
+# Offizielle Docker-Website (in Festlandchina ist ein VPN erforderlich)
+https://docs.docker.com/get-started/get-docker/
+
+# Offizielle Git-Website
+https://git-scm.com/install/linux
+
+# Offizielle VS-Code-Website
+https://code.visualstudio.com/
+```
+
+## Serverinstallation und Downloads
+
+### 1. Grundinstallation
+
+```
+# Docker installieren: Folge der offiziellen Anleitung unter https://docs.docker.com/get-started/get-docker/
+# Git installieren: Folge der offiziellen Anleitung unter https://git-scm.com/install/linux/
+# wget installieren:
+    # Aktualisiere zuerst die Paketliste, um die neuesten Versionsinformationen zu erhalten
+    sudo apt update
+    # Installiere wget
+    sudo apt install wget
+# unzip installieren:
+    sudo apt update
+    sudo apt install unzip
+
+```
+
+### 2. Skripte herunterladen
+
+<CompressedDownloadLink files={['/downloads/ai-media-aoi-useless/aoi_useless_docker.zip']}>
+  Projektdatei-Skripte
+</CompressedDownloadLink>
+
+```
+# Lade die Projektskripte herunter
+wget https://github.com/zwglass/barley_ai_blog/blob/master/public/downloads/ai-media-aoi-useless/aoi_useless_docker.zip
+
+# Entpacken
+unzip aoi_useless_docker.zip
+```
+
+### 3. ComfyUI klonen und Modelle herunterladen
+
+```
+# ComfyUI klonen
+cd aoi_useless_docker
+git clone https://github.com/comfyanonymous/ComfyUI.git
+
+# Modelle herunterladen (lege vor dem Download bei Hugging Face Access Tokens fest)
+export HF_TOKEN="Access Tokens"
+
+**ComfyUI/models/checkpoints**
+cd ComfyUI/models/checkpoints/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O ace_step_v1_35b.safetensors "https://huggingface.co/Comfy-Org/ACE-Step_ComfyUI_repackaged/resolve/main/all_in_one/ace_step_v1_3.5b.safetensors"
+
+**diffusion_models**
+cd ComfyUI/models/diffusion_models/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O Wan2_2-Animate-14B_fp8_scaled_e5m2_KJ_v2.safetensors "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/Wan22Animate/Wan2_2-Animate-14B_fp8_scaled_e5m2_KJ_v2.safetensors"
+
+**loras**
+cd ComfyUI/models/loras/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors"
+
+**clip_visions**
+cd ComfyUI/models/clip_visions/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O clip_vision_h.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
+
+**vae**
+cd ComfyUI/models/vae/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O wan_21_vae.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
+
+**text_encoders**
+cd ComfyUI/models/text_encoders/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O umt5_xxl_fp8_e4m3fn_scaled.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+```
+
+### 4. Docker-Image erstellen
+
+```
+cd /your/path/aoi_useless_docker          # Wechsel in den Projektordner
+http_proxy="http://server.url:20171"      # Ich verwende hier einen Proxy; ersetze ihn durch deine Proxy-URL und -Port
+mv Dockerfile ./ComfyUI/ && mv sources.list ./ComfyUI/ && cd ComfyUI/      # Verschiebe Dockerfile und sources.list nach ComfyUI/
+
+# Image erstellen
+DOCKER_BUILDKIT=1 docker build --build-arg http_proxy=${http_proxy} --build-arg https_proxy=${http_proxy} -t comfyui_docker .
+```
+
+### 5. Umgebungsvariablen aktualisieren und den Docker-Container starten
+
+```
+# Bearbeite die .env-Variablen (bearbeite auf dem Server mit nano)
+cd  /your/path/aoi_useless_docker          # Wechsel in den Projektordner
+nano .env                                  # Setze USER_COMFYUI auf /your/path/aoi_useless_docker/ComfyUI
+
+# Docker-Container starten
+docker compose up -d
+```
+
+## Schritte auf dem Desktop
+
+### 1. Lade die Projektskripte herunter (klicke unten auf den Link und entpacke sie)
+
+<CompressedDownloadLink files={['/downloads/ai-media-aoi-useless/aoi_useless_docker.zip']}>
+  Projektdatei-Skripte
+</CompressedDownloadLink>
+
+### 2. Öffne die ComfyUI-Website im Browser
+
+    - http://server.url:8189
+
+### 3. Erstelle den Track „Useless“ mit ace-step
+
+```
+# Tags:
+Eine kraftvolle Sängerin, die in einem energiegeladenen Rocksongsarkastisch und trotzig auftritt, treibender Rhythmus, starke E-Gitarrenriffs, selbstbewusst und bestimmt, scharfzüngiger gesellschaftlicher Kommentar
+
+# Songtext (chinesische Zeilen müssen in Pinyin stehen):
+[inst]
+
+[verse]
+[zh]ben lai ying gai
+[zh]cong cong rong rong, you ren you yu
+[zh]xian zai shi
+[zh]cong cong mang mang, lian gun dai pa
+
+[verse]
+[zh]zheng yan shuo xia hua
+[zh]ni zai geng ye shen me la
+[zh]ni zai ku shen me ku
+[zh]mei chu xi
+```
+
+### 4. Ersetze video_wan2_2_14B_animate durch „Lehrerin Aoi“
+
+```
+# Prompt:
+Die Frauen sangen leidenschaftlich im Raum.
+```

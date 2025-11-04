@@ -1,0 +1,162 @@
+---
+title: 'AIで蒼井先生版「Useless」を作成する'
+date: '2025-11-04'
+tags:
+  - AI-Media
+summary: 'AIで蒼井先生版「Useless」を作成する'
+language: ja
+translationKey: ai-media-aoi-useless
+authors:
+  - default
+---
+
+AIで蒼井先生版「Useless」を作成する
+
+### 基本ツールをインストール: Python、VS Code、Git、Docker。下記の公式サイトからダウンロードする
+
+```
+# CUDA 公式サイト
+https://developer.nvidia.com/cuda-toolkit
+
+# Python 公式サイト
+https://www.python.org/
+
+# Docker 公式サイト（中国本土ではVPNが必要）
+https://docs.docker.com/get-started/get-docker/
+
+# Git 公式サイト
+https://git-scm.com/install/linux
+
+# VS Code 公式サイト
+https://code.visualstudio.com/
+```
+
+## サーバー側のインストールとダウンロード
+
+### 1. 基本インストール
+
+```
+# Docker をインストール: https://docs.docker.com/get-started/get-docker/ の公式ガイドに従う
+# Git をインストール: https://git-scm.com/install/linux/ の公式ガイドに従う
+# wget をインストール:
+    # まずパッケージリストを更新し、最新のバージョン情報を取得する
+    sudo apt update
+    # wget をインストール
+    sudo apt install wget
+# unzip をインストール:
+    sudo apt update
+    sudo apt install unzip
+
+```
+
+### 2. スクリプトをダウンロード
+
+<CompressedDownloadLink files={['/downloads/ai-media-aoi-useless/aoi_useless_docker.zip']}>
+  プロジェクトスクリプトファイル
+</CompressedDownloadLink>
+
+```
+# プロジェクトスクリプトをダウンロード
+wget https://github.com/zwglass/barley_ai_blog/blob/master/public/downloads/ai-media-aoi-useless/aoi_useless_docker.zip
+
+# 解凍
+unzip aoi_useless_docker.zip
+```
+
+### 3. ComfyUI をクローンし、モデルをダウンロード
+
+```
+# ComfyUI をクローン
+cd aoi_useless_docker
+git clone https://github.com/comfyanonymous/ComfyUI.git
+
+# モデルをダウンロード（Hugging Face からダウンロードする前に Access Token を設定）
+export HF_TOKEN="Access Tokens"
+
+**ComfyUI/models/checkpoints**
+cd ComfyUI/models/checkpoints/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O ace_step_v1_35b.safetensors "https://huggingface.co/Comfy-Org/ACE-Step_ComfyUI_repackaged/resolve/main/all_in_one/ace_step_v1_3.5b.safetensors"
+
+**diffusion_models**
+cd ComfyUI/models/diffusion_models/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O Wan2_2-Animate-14B_fp8_scaled_e5m2_KJ_v2.safetensors "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/Wan22Animate/Wan2_2-Animate-14B_fp8_scaled_e5m2_KJ_v2.safetensors"
+
+**loras**
+cd ComfyUI/models/loras/
+wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors"
+
+**clip_visions**
+cd ComfyUI/models/clip_visions/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O clip_vision_h.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
+
+**vae**
+cd ComfyUI/models/vae/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O wan_21_vae.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
+
+**text_encoders**
+cd ComfyUI/models/text_encoders/
+sudo wget --tries=5 --timeout=30 --retry-connrefused --header="Authorization: Bearer $HF_TOKEN" -O umt5_xxl_fp8_e4m3fn_scaled.safetensors "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+```
+
+### 4. Docker イメージをビルド
+
+```
+cd /your/path/aoi_useless_docker          # プロジェクトディレクトリに移動
+http_proxy="http://server.url:20171"      # ここではプロキシを使用。自分のプロキシURLとポートに置き換える
+mv Dockerfile ./ComfyUI/ && mv sources.list ./ComfyUI/ && cd ComfyUI/      # Dockerfile と sources.list を ComfyUI/ に移動
+
+# イメージをビルド
+DOCKER_BUILDKIT=1 docker build --build-arg http_proxy=${http_proxy} --build-arg https_proxy=${http_proxy} -t comfyui_docker .
+```
+
+### 5. 環境変数を更新し、Docker コンテナを起動
+
+```
+# .env の環境変数を編集（サーバー側で nano を使って編集）
+cd  /your/path/aoi_useless_docker          # プロジェクトディレクトリに移動
+nano .env                                  # USER_COMFYUI を /your/path/aoi_useless_docker/ComfyUI に変更
+
+# Docker コンテナを起動
+docker compose up -d
+```
+
+## PC 側の作業
+
+### 1. プロジェクトスクリプトをダウンロード（下のリンクをクリックして解凍）
+
+<CompressedDownloadLink files={['/downloads/ai-media-aoi-useless/aoi_useless_docker.zip']}>
+  プロジェクトスクリプトファイル
+</CompressedDownloadLink>
+
+### 2. ブラウザで ComfyUI サイトを開く
+
+    - http://server.url:8189
+
+### 3. ace-step で「Useless」のトラックを作成
+
+```
+# タグ:
+力強い女性ボーカルが皮肉と反抗の独白を力強いロックソングで歌い上げる。ドライヴ感のあるリズム、力強いエレキギターリフ、自信に満ちた堂々とした雰囲気、機知に富んだ社会的メッセージ
+
+# 歌詞（中国語の行はピンインで記述）:
+[inst]
+
+[verse]
+[zh]ben lai ying gai
+[zh]cong cong rong rong, you ren you yu
+[zh]xian zai shi
+[zh]cong cong mang mang, lian gun dai pa
+
+[verse]
+[zh]zheng yan shuo xia hua
+[zh]ni zai geng ye shen me la
+[zh]ni zai ku shen me ku
+[zh]mei chu xi
+```
+
+### 4. video_wan2_2_14B_animate を「蒼井先生」に置き換える
+
+```
+# プロンプト:
+その部屋で女性たちが情熱的に歌っていた。
+```
